@@ -14,12 +14,6 @@ import pandas as pd
 import numpy as np
 import os
 
-# =========================================================================
-# 1. DEFINIR LAS CARPETAS DE CADA MES
-# =========================================================================
-# Cada mes tiene sus CSV dentro de una carpeta CSV/
-# Febrero 2024 tiene carpeta doble: Febrero 2024/Febrero 2024/CSV/
-
 MESES = {
     "Enero 2024": "Enero 2024/CSV",
     "Febrero 2024": "Febrero 2024/Febrero 2024/CSV",  # Carpeta doble
@@ -65,9 +59,6 @@ def buscar_archivo(carpeta, nombres_posibles):
     return None
 
 
-# =========================================================================
-# 2. LEER Y UNIR TODOS LOS MESES
-# =========================================================================
 LLAVES = ["DIRECTORIO", "SECUENCIA_P", "ORDEN"]
 
 lista_dataframes = []
@@ -78,7 +69,7 @@ for mes, ruta_csv in MESES.items():
     print(f"Procesando: {mes}")
     print(f"{'='*60}")
 
-    # Buscar archivos
+    
     ruta_caract = buscar_archivo(ruta_csv, NOMBRES_CARACTERISTICAS)
     ruta_ocup = buscar_archivo(ruta_csv, NOMBRES_OCUPADOS)
 
@@ -99,7 +90,7 @@ for mes, ruta_csv in MESES.items():
     print(f"  Características: {ruta_caract}")
     print(f"  Ocupados: {ruta_ocup}")
 
-    # Leer CSVs
+    
     try:
         caract = pd.read_csv(ruta_caract, sep=";", encoding="latin-1", low_memory=False)
         ocup = pd.read_csv(ruta_ocup, sep=";", encoding="latin-1", low_memory=False)
@@ -111,16 +102,16 @@ for mes, ruta_csv in MESES.items():
     print(f"  Características: {caract.shape[0]:,} filas")
     print(f"  Ocupados: {ocup.shape[0]:,} filas")
 
-    # Unir por llaves de persona
+    
     datos_mes = caract.merge(ocup, on=LLAVES, how="inner", suffixes=("_cg", "_oc"))
     print(f"  Después del merge: {datos_mes.shape[0]:,} filas")
 
-    # Agregar columna para identificar el mes
+    
     datos_mes["MES_PERIODO"] = mes
 
     lista_dataframes.append(datos_mes)
 
-# Concatenar todos los meses
+
 if not lista_dataframes:
     print("\nERROR: No se pudo leer ningún mes. Revisa las rutas.")
     exit()
@@ -134,9 +125,7 @@ if errores:
     print(f"Meses con error (revisar): {errores}")
 
 
-# =========================================================================
-# 3. SELECCIONAR VARIABLES RELEVANTES Y RENOMBRAR
-# =========================================================================
+
 columnas_mapeo = {
     "P3271": "SEXO",
     "P6040": "EDAD",
@@ -165,7 +154,7 @@ def obtener_columna(df, nombre_base):
     return None
 
 
-# Buscar las columnas reales (con o sin sufijo)
+
 columnas_reales = {}
 for col_dane, col_nueva in columnas_mapeo.items():
     col_real = obtener_columna(datos, col_dane)
@@ -174,19 +163,17 @@ for col_dane, col_nueva in columnas_mapeo.items():
     else:
         print(f"  ADVERTENCIA: No se encontró la columna {col_dane}")
 
-# Agregar la columna de periodo
+
 columnas_reales["MES_PERIODO"] = "MES_PERIODO"
 
-# Seleccionar y renombrar
+
 df = datos[list(columnas_reales.keys())].rename(columns=columnas_reales)
 
 print(f"\nDataset con variables seleccionadas: {df.shape[0]:,} filas, {df.shape[1]} columnas")
 print(f"Columnas: {list(df.columns)}")
 
 
-# =========================================================================
-# 4. CREAR VARIABLE OBJETIVO: INFORMAL
-# =========================================================================
+
 df = df[df["COTIZA_PENSION"].isin([1, 2])].copy()
 df["INFORMAL"] = (df["COTIZA_PENSION"] == 2).astype(int)
 
@@ -198,9 +185,7 @@ print(f"  1 (Informal): {(df['INFORMAL'] == 1).sum():>10,} ({(df['INFORMAL'] == 
 print(f"  Total:        {len(df):>10,}")
 
 
-# =========================================================================
-# 5. LIMPIEZA BÁSICA
-# =========================================================================
+
 print(f"\n{'='*60}")
 print(f"VALORES NULOS ANTES DE LIMPIEZA")
 print(f"{'='*60}")
@@ -215,9 +200,7 @@ print(f"\nVALORES NULOS DESPUÉS DE LIMPIEZA")
 print(df.isnull().sum())
 
 
-# =========================================================================
-# 6. RESUMEN EXPLORATORIO
-# =========================================================================
+
 print(f"\n{'='*60}")
 print(f"RESUMEN POR MES")
 print(f"{'='*60}")
@@ -281,9 +264,7 @@ print(
 )
 
 
-# =========================================================================
-# 7. GUARDAR DATASET LIMPIO
-# =========================================================================
+
 RUTA_SALIDA = "datos_informalidad_10meses.csv"
 df.to_csv(RUTA_SALIDA, index=False)
 print(f"\n{'='*60}")
