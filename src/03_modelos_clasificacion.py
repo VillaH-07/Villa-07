@@ -1,20 +1,3 @@
-"""
-==========================================================================
-MODELOS DE CLASIFICACIÓN
-Predicción de Informalidad Laboral en Colombia
-Datos: GEIH - DANE (Ene 2024 - Feb 2026, 10 meses)
-==========================================================================
-Especialización en Ciencia de Datos e Inteligencia Artificial
-Universidad de Medellín
-
-Variable objetivo: INFORMAL (1 = Informal, 0 = Formal)
-Modelos: Regresión Logística y Random Forest
-==========================================================================
-"""
-
-# =========================================================================
-# 1. CARGAR LIBRERÍAS
-# =========================================================================
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,9 +23,6 @@ from imblearn.over_sampling import SMOTE
 print("Librerías cargadas correctamente.")
 
 
-# =========================================================================
-# 2. CARGAR Y PREPARAR LOS DATOS
-# =========================================================================
 RUTA_DATOS = "data/processed/datos_informalidad_10meses.csv"
 datos = pd.read_csv(RUTA_DATOS)
 
@@ -97,9 +77,6 @@ print(f"\nForma de X: {X.shape}")
 print(f"Forma de y: {y.shape}")
 
 
-# =========================================================================
-# 4. VERIFICAR MULTICOLINEALIDAD
-# =========================================================================
 print("\n" + "=" * 60)
 print("4. MATRIZ DE CORRELACIONES (verificar multicolinealidad)")
 print("=" * 60)
@@ -116,9 +93,6 @@ plt.show()
 print("\nGráfico guardado: data/processed/correlacion_features.png")
 
 
-# =========================================================================
-# 5. DIVIDIR EN ENTRENAMIENTO Y PRUEBA
-# =========================================================================
 print("\n" + "=" * 60)
 print("5. DIVISIÓN ENTRENAMIENTO / PRUEBA")
 print("=" * 60)
@@ -136,7 +110,7 @@ print(y_test.value_counts())
 
 
 # =========================================================================
-# 6. BALANCEAR CLASES CON SMOTE
+# BALANCEAR CLASES CON SMOTE
 # =========================================================================
 print("\n" + "=" * 60)
 print("6. BALANCEO DE CLASES CON SMOTE")
@@ -152,16 +126,13 @@ print(y_train_bal.value_counts())
 
 
 # =========================================================================
-# 7. ESCALAR DATOS (necesario para Regresión Logística)
+# ESCALAR DATOS (necesario para Regresión Logística)
 # =========================================================================
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train_bal)
 X_test_scaled = scaler.transform(X_test)
 
 
-# =========================================================================
-# 8. FUNCIÓN PARA EVALUAR MODELOS
-# =========================================================================
 def evaluar_modelo(nombre, modelo, X_train, y_train, X_test, y_test):
     """Entrena, predice y evalúa un modelo de clasificación."""
     print(f"\n{'=' * 60}")
@@ -218,7 +189,7 @@ def evaluar_modelo(nombre, modelo, X_train, y_train, X_test, y_test):
 
 
 # =========================================================================
-# 9. MODELO 1: REGRESIÓN LOGÍSTICA
+# MODELO 1: REGRESIÓN LOGÍSTICA
 # =========================================================================
 modelo_log = LogisticRegression(max_iter=1000, random_state=42)
 resultado_log = evaluar_modelo(
@@ -227,7 +198,7 @@ resultado_log = evaluar_modelo(
 
 
 # =========================================================================
-# 10. MODELO 2: RANDOM FOREST
+# MODELO 2: RANDOM FOREST
 # =========================================================================
 # Random Forest no necesita escalado, pero usamos datos balanceados
 modelo_rf = RandomForestClassifier(
@@ -244,7 +215,7 @@ resultado_rf = evaluar_modelo(
 
 
 # =========================================================================
-# 11. IMPORTANCIA DE VARIABLES (Random Forest)
+# IMPORTANCIA DE VARIABLES (Random Forest)
 # =========================================================================
 print("\n" + "=" * 60)
 print("11. IMPORTANCIA DE VARIABLES (Random Forest)")
@@ -267,7 +238,7 @@ print("\nGráfico guardado: data/processed/importancia_variables_rf.png")
 
 
 # =========================================================================
-# 12. CURVAS ROC
+# CURVAS ROC
 # =========================================================================
 print("\n" + "=" * 60)
 print("12. CURVAS ROC")
@@ -304,7 +275,7 @@ print("\nGráfico guardado: data/processed/curvas_roc.png")
 
 
 # =========================================================================
-# 13. COMPARACIÓN DE MODELOS
+# COMPARACIÓN DE MODELOS
 # =========================================================================
 print("\n" + "=" * 60)
 print("13. COMPARACIÓN DE MODELOS")
@@ -337,7 +308,7 @@ print("\nGráfico guardado: data/processed/comparacion_modelos.png")
 
 
 # =========================================================================
-# 14. PREDICCIÓN DE UN NUEVO INDIVIDUO
+# PREDICCIÓN DE UN NUEVO INDIVIDUO
 # =========================================================================
 print("\n" + "=" * 60)
 print("14. PREDICCIÓN DE UN NUEVO INDIVIDUO (ejemplo)")
@@ -384,9 +355,6 @@ print(f"    Probabilidad Formal:   {prob_rf[0]:.4f}")
 print(f"    Probabilidad Informal: {prob_rf[1]:.4f}")
 
 
-# =========================================================================
-# RESUMEN FINAL
-# =========================================================================
 print("\n" + "=" * 60)
 print("RESUMEN DEL MODELADO")
 print("=" * 60)
