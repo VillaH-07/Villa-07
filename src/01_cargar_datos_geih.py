@@ -1,13 +1,4 @@
-"""
-==========================================================================
-PROYECTO: Predicción de Informalidad Laboral en Colombia
-DATOS: GEIH - DANE (Ene 2024 - Feb 2026, 10 meses)
-==========================================================================
-Este script lee los microdatos de la GEIH del DANE de múltiples meses,
-los une, limpia y prepara para modelado de Machine Learning.
-
-Variable objetivo: INFORMAL (1 = No cotiza a pensión, 0 = Sí cotiza)
-==========================================================================
+"""Variable objetivo: INFORMAL (1 = No cotiza a pensión, 0 = Sí cotiza)
 """
 
 import pandas as pd
@@ -15,16 +6,16 @@ import numpy as np
 import os
 
 MESES = {
-    "Enero 2024": "Enero 2024/CSV",
-    "Febrero 2024": "Febrero 2024/Febrero 2024/CSV",  # Carpeta doble
-    "Marzo 2024": "Marzo 2024/CSV/CSV",
-    "Abril 2024": "Abril 2024/CSV/CSV",
-    "Enero 2025": "Enero 2025/CSV",
-    "Febrero 2025": "Febrero 2025/CSV",
-    "Marzo 2025": "Marzo 2025/CSV",
-    "Abril 2025": "Abril 2025/CSV",
-    "Enero 2026": "Enero 2026/CSV",
-    "Febrero 2026": "Febrero 2026/CSV",
+    "Enero 2024": "data/raw/Enero 2024/CSV",
+    "Febrero 2024": "data/raw/Febrero 2024/Febrero 2024/CSV",
+    "Marzo 2024": "data/raw/Marzo 2024/CSV/CSV",
+    "Abril 2024": "data/raw/Abril 2024/CSV/CSV",
+    "Enero 2025": "data/raw/Enero 2025/CSV",
+    "Febrero 2025": "data/raw/Febrero 2025/CSV",
+    "Marzo 2025": "data/raw/Marzo 2025/CSV",
+    "Abril 2025": "data/raw/Abril 2025/CSV",
+    "Enero 2026": "data/raw/Enero 2026/CSV",
+    "Febrero 2026": "data/raw/Febrero 2026/CSV",
 }
 
 # Nombres posibles del archivo de Características Generales
@@ -125,7 +116,6 @@ if errores:
     print(f"Meses con error (revisar): {errores}")
 
 
-
 columnas_mapeo = {
     "P3271": "SEXO",
     "P6040": "EDAD",
@@ -154,7 +144,6 @@ def obtener_columna(df, nombre_base):
     return None
 
 
-
 columnas_reales = {}
 for col_dane, col_nueva in columnas_mapeo.items():
     col_real = obtener_columna(datos, col_dane)
@@ -166,13 +155,10 @@ for col_dane, col_nueva in columnas_mapeo.items():
 
 columnas_reales["MES_PERIODO"] = "MES_PERIODO"
 
-
 df = datos[list(columnas_reales.keys())].rename(columns=columnas_reales)
 
 print(f"\nDataset con variables seleccionadas: {df.shape[0]:,} filas, {df.shape[1]} columnas")
 print(f"Columnas: {list(df.columns)}")
-
-
 
 df = df[df["COTIZA_PENSION"].isin([1, 2])].copy()
 df["INFORMAL"] = (df["COTIZA_PENSION"] == 2).astype(int)
@@ -183,8 +169,6 @@ print(f"{'='*60}")
 print(f"  0 (Formal):   {(df['INFORMAL'] == 0).sum():>10,} ({(df['INFORMAL'] == 0).mean()*100:.1f}%)")
 print(f"  1 (Informal): {(df['INFORMAL'] == 1).sum():>10,} ({(df['INFORMAL'] == 1).mean()*100:.1f}%)")
 print(f"  Total:        {len(df):>10,}")
-
-
 
 print(f"\n{'='*60}")
 print(f"VALORES NULOS ANTES DE LIMPIEZA")
@@ -198,8 +182,6 @@ df["AFILIADO_SALUD"] = df["AFILIADO_SALUD"].fillna(df["AFILIADO_SALUD"].mode()[0
 
 print(f"\nVALORES NULOS DESPUÉS DE LIMPIEZA")
 print(df.isnull().sum())
-
-
 
 print(f"\n{'='*60}")
 print(f"RESUMEN POR MES")
@@ -264,8 +246,7 @@ print(
 )
 
 
-
-RUTA_SALIDA = "datos_informalidad_10meses.csv"
+RUTA_SALIDA = "data/processed/datos_informalidad_10meses.csv"
 df.to_csv(RUTA_SALIDA, index=False)
 print(f"\n{'='*60}")
 print(f"DATASET GUARDADO: {RUTA_SALIDA}")
