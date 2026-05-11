@@ -247,7 +247,7 @@ print(
 
 
 RUTA_SALIDA = "data/processed/datos_informalidad_10meses.csv"
-df.to_csv(RUTA_SALIDA, index=False)
+df.to_csv(RUTA_SALIDA, index=False, sep= ",")
 print(f"\n{'='*60}")
 print(f"DATASET GUARDADO: {RUTA_SALIDA}")
 print(f"Filas: {df.shape[0]:,} | Columnas: {df.shape[1]}")
