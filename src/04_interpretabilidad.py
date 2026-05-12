@@ -1,17 +1,3 @@
-"""
-==========================================================================
-INTERPRETABILIDAD DE MODELOS
-Predicción de Informalidad Laboral en Colombia
-Datos: GEIH - DANE (Ene 2024 - Feb 2026, 10 meses)
-==========================================================================
-Especialización en Ciencia de Datos e Inteligencia Artificial
-Universidad de Medellín
-
-Técnicas: SHAP (SHapley Additive exPlanations) e Importancia por Permutación
-Modelo analizado: Random Forest (mejor modelo)
-==========================================================================
-"""
-
 # =========================================================================
 # 1. CARGAR LIBRERÍAS
 # =========================================================================
